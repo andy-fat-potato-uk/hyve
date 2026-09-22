@@ -52,6 +52,7 @@ class StationConfig(StrictBaseModel):
 class GridConfig(StrictBaseModel):
     source: dict[str, Any]
     coords: GridCoords = GridCoords()
+    variable: Optional[str] = None
     to_xarray_options: dict[str, Any] = {}
 
     @field_validator("source")

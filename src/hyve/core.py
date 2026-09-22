@@ -43,6 +43,6 @@ def load_da(
     source = ekd.from_source(src_name, **ds_config["source"][src_name])
     ds = source.to_xarray(**ds_config.get("to_xarray_options", {}))
     ds_attrs = ds.attrs
-    var_name = find_main_var(ds, n_dims)
+    var_name = ds_config["variable"] or find_main_var(ds, n_dims)
     da = ds[var_name]
     return da, var_name, ds_attrs
