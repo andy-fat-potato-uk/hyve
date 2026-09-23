@@ -36,7 +36,12 @@ def process_grid_inputs(
         Grid shape (n_x, n_y).
     """
     da, var_name, ds_attrs = load_da(
-        {"source": grid.source, "to_xarray_options": grid.to_xarray_options}, 3
+        {
+            "source": {grid.source.name: grid.source.options},
+            "to_xarray_options": grid.to_xarray_options,
+        },
+        3,
+        grid.source.variable,
     )
     logger.info(f"Xarray created from source:\n{da}\n")
     x_dim = grid.coords.x

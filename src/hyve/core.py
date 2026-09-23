@@ -37,12 +37,12 @@ def find_main_var(ds: xarray.Dataset, min_dim: int = 2):
 
 
 def load_da(
-    ds_config: dict, n_dims: int
+    ds_config: dict, n_dims: int, variable: str | None = None
 ) -> tuple[xarray.DataArray, str, dict[str, Any]]:
     src_name = list(ds_config["source"].keys())[0]
     source = ekd.from_source(src_name, **ds_config["source"][src_name])
     ds = source.to_xarray(**ds_config.get("to_xarray_options", {}))
     ds_attrs = ds.attrs
-    var_name = ds_config["variable"] or find_main_var(ds, n_dims)
+    var_name = variable or find_main_var(ds, n_dims)
     da = ds[var_name]
     return da, var_name, ds_attrs

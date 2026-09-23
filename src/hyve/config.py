@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Any, Optional
 
-from pydantic import BaseModel, ConfigDict, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, model_validator
 
 
 class StrictBaseModel(BaseModel):
@@ -49,21 +49,16 @@ class StationConfig(StrictBaseModel):
         return self
 
 
-class GridConfig(StrictBaseModel):
-    source: dict[str, Any]
-    coords: GridCoords = GridCoords()
-    variable: Optional[str] = None
-    to_xarray_options: dict[str, Any] = {}
+class EarthkitDataSource(StrictBaseModel):
+    name: str
+    options: Any
+    variable: str | None = None
 
-    @field_validator("source")
-    @classmethod
-    def source_has_single_key(cls, v: dict[str, Any]) -> dict[str, Any]:
-        if len(v) != 1:
-            raise ValueError(
-                f"'source' must have exactly one key (the earthkit-data source type), "
-                f"got {len(v)}: {list(v.keys())}"
-            )
-        return v
+
+class GridConfig(StrictBaseModel):
+    source: EarthkitDataSource
+    coords: GridCoords = GridCoords()
+    to_xarray_options: dict[str, Any] = {}
 
 
 class OutputConfig(StrictBaseModel):
