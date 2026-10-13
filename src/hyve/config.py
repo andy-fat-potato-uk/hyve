@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Any, Optional
 
-from pydantic import BaseModel, ConfigDict, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, model_validator
 
 
 class StrictBaseModel(BaseModel):
@@ -49,20 +49,30 @@ class StationConfig(StrictBaseModel):
         return self
 
 
+class EarthkitDataSource(StrictBaseModel):
+    name: str
+    options: Any
+    variable: str | None = None
+
+    @model_validator(mode="after")
+    def check_name_and_options(self) -> "EarthkitDataSource":
+        if self.name == "gribjump":
+            if isinstance(self.options, dict):
+                if not self.options.get("request"):
+                    raise ValueError("Gribjump source requires 'request' in options.")
+                if len(self.options) != 1:
+                    raise ValueError(
+                        "Gribjump source options must only contain one 'request' entry"
+                    )
+            else:
+                raise ValueError("Gribjump source options must be a dictionary.")
+        return self
+
+
 class GridConfig(StrictBaseModel):
-    source: dict[str, Any]
+    source: EarthkitDataSource
     coords: GridCoords = GridCoords()
     to_xarray_options: dict[str, Any] = {}
-
-    @field_validator("source")
-    @classmethod
-    def source_has_single_key(cls, v: dict[str, Any]) -> dict[str, Any]:
-        if len(v) != 1:
-            raise ValueError(
-                f"'source' must have exactly one key (the earthkit-data source type), "
-                f"got {len(v)}: {list(v.keys())}"
-            )
-        return v
 
 
 class OutputConfig(StrictBaseModel):

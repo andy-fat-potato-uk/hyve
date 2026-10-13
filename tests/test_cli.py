@@ -8,7 +8,7 @@ def test_cli_validation_error_exits_cleanly(tmp_path, capsys):
     """Missing required field produces exact formatted error on stderr and exits 1."""
     config = {
         "station": {"file": "s.csv", "index": {}},  # missing name
-        "grid": {"source": {"list-of-dicts": {}}},
+        "grid": {"source": {"name": "file", "options": "/path/to/file"}},
     }
     path = tmp_path / "cfg.yaml"
     path.write_text(yaml.dump(config))
