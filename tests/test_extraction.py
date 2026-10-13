@@ -108,9 +108,10 @@ def test_extractor_with_temperature(dummy_grid_data, station_csv_file, mapping_c
         },
         "grid": {
             "source": {
-                "list-of-dicts": {
+                "name": "list-of-dicts",
+                "options": {
                     "list_of_dicts": dummy_grid_data,
-                }
+                },
             },
             "coords": {
                 "x": "latitude",
@@ -162,9 +163,10 @@ def test_extractor_with_station_filter(dummy_grid_data, tmp_path):
         },
         "grid": {
             "source": {
-                "list-of-dicts": {
+                "name": "list-of-dicts",
+                "options": {
                     "list_of_dicts": dummy_grid_data,
-                }
+                },
             },
             "coords": {
                 "x": "latitude",
@@ -191,7 +193,10 @@ def test_extractor_rejects_both_index_and_coords(dummy_grid_data, station_csv_fi
             "coords": {"x": "opt_x_coord", "y": "opt_y_coord"},
         },
         "grid": {
-            "source": {"list-of-dicts": {"list_of_dicts": dummy_grid_data}},
+            "source": {
+                "name": "list-of-dicts",
+                "options": {"list_of_dicts": dummy_grid_data},
+            },
             "coords": {"x": "latitude", "y": "longitude"},
         },
     }
@@ -220,7 +225,7 @@ def test_extractor_rejects_index_1d_with_other_mapping(station_csv_file):
             "index": {},
             "index_1d": "some_col",
         },
-        "grid": {"source": {"list-of-dicts": {}}},
+        "grid": {"source": {"name": "list-of-dicts", "options": {}}},
     }
 
     with pytest.raises(ValidationError):
@@ -235,7 +240,7 @@ def test_extractor_rejects_multi_key_source(station_csv_file):
             "name": "station_id",
             "index": {},
         },
-        "grid": {"source": {"list-of-dicts": {}, "fdb": {}}},
+        "grid": {"source": {"name": "list-of-dicts", "options": {}, "fdb": {}}},
     }
 
     with pytest.raises(ValidationError):
@@ -254,9 +259,8 @@ def test_extractor_with_output_file(dummy_grid_data, station_csv_file, tmp_path)
         },
         "grid": {
             "source": {
-                "list-of-dicts": {
-                    "list_of_dicts": dummy_grid_data,
-                }
+                "name": "list-of-dicts",
+                "options": {"list_of_dicts": dummy_grid_data},
             },
             "coords": {
                 "x": "latitude",
@@ -297,7 +301,7 @@ def test_extractor_with_empty_stations(dummy_grid_data, tmp_path):
             "index": {"x": "opt_x_index", "y": "opt_y_index"},
         },
         "grid": {
-            "source": {"list-of-dicts": {"list_of_dicts": dummy_grid_data}},
+            "source": {"name": "list-of-dicts", "options": dummy_grid_data},
             "coords": {"x": "latitude", "y": "longitude"},
         },
     }
@@ -317,7 +321,7 @@ def test_extractor_rejects_unknown_field_in_nested_config(
             "index": {},
             "typo_field": "oops",
         },
-        "grid": {"source": {"list-of-dicts": {"list_of_dicts": dummy_grid_data}}},
+        "grid": {"source": {"name": "list-of-dicts", "options": dummy_grid_data}},
     }
     with pytest.raises(ValidationError):
         _extract(config)
@@ -351,9 +355,10 @@ def test_extractor_gribjump(mock_from_source, tmp_path):
         "station": {"file": str(csv_file), "name": "name", "index_1d": "idx"},
         "grid": {
             "source": {
-                "gribjump": {
+                "name": "gribjump",
+                "options": {
                     "request": {"class": "od", "expver": "0001", "stream": "oper"}
-                }
+                },
             }
         },
     }

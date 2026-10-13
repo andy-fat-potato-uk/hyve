@@ -54,6 +54,20 @@ class EarthkitDataSource(StrictBaseModel):
     options: Any
     variable: str | None = None
 
+    @model_validator(mode="after")
+    def check_name_and_options(self) -> "EarthkitDataSource":
+        if self.name == "gribjump":
+            if isinstance(self.options, dict):
+                if not self.options.get("request"):
+                    raise ValueError("Gribjump source requires 'request' in options.")
+                if len(self.options) != 1:
+                    raise ValueError(
+                        "Gribjump source options must only contain one 'request' entry"
+                    )
+            else:
+                raise ValueError("Gribjump source options must be a dictionary.")
+        return self
+
 
 class GridConfig(StrictBaseModel):
     source: EarthkitDataSource

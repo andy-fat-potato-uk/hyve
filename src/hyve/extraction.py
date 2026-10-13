@@ -184,7 +184,7 @@ def _process_gribjump(grid: GridConfig, df: pd.DataFrame) -> xr.Dataset:
     gribjump_config = {
         "source": {
             "gribjump": {
-                **grid.source["gribjump"],
+                **grid.source.options,
                 "ranges": ranges,
                 # fetch_coords_from_fdb is currently very slow. Needs fix in
                 # earthkit-data gribjump source.
@@ -243,7 +243,7 @@ def process_inputs(station: StationConfig, grid: GridConfig) -> xr.Dataset:
         Dataset with a ``station`` dimension containing the extracted timeseries.
     """
     df = parse_stations(station)
-    if "gribjump" in grid.source:
+    if grid.source.name == "gribjump":
         return _process_gribjump(grid, df)
     return _process_regular(grid, df)
 
